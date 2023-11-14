@@ -9,6 +9,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,5 +110,17 @@ class MemberRepositoryTest {
         List<MemberDto> result = memberRepository.findMemberDto();
         assertThat(result.get(0).getUsername()).isEqualTo("AAA");
         assertThat(result.get(0).getTeamName()).isEqualTo("teamA");
+    }
+
+    @Test
+    public void findByNames() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> result = memberRepository.findByNames(Arrays.asList("AAA", "BBB"));
+        assertThat(result.get(0).getUsername()).isEqualTo(m1.getUsername());
+        assertThat(result.get(1).getUsername()).isEqualTo(m2.getUsername());
     }
 }
