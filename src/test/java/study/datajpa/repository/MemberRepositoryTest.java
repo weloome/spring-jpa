@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
+import study.datajpa.dto.UsernameOnlyDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
@@ -218,5 +219,47 @@ class MemberRepositoryTest {
     @Test
     public void callCustom() {
         List<Member> result = memberRepository.findMemberCustom();
+    }
+
+    @Test
+    public void projections() {
+        // given
+        Team team = new Team("teamA");
+        em.persist(team);
+
+        Member member1 = new Member("m1", 10, team);
+        Member member2 = new Member("m2", 10, team);
+        em.persist(member1);
+        em.persist(member2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
+    }
+
+    @Test
+    public void dtoProjections() {
+        // given
+        Team team = new Team("teamA");
+        em.persist(team);
+
+        Member member1 = new Member("m1", 10, team);
+        Member member2 = new Member("m2", 10, team);
+        em.persist(member1);
+        em.persist(member2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<UsernameOnlyDto> result = memberRepository.findProjectionsDtoByUsername("m1");
+        for (UsernameOnlyDto usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
     }
 }
